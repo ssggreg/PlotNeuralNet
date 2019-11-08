@@ -50,6 +50,34 @@ def block_Unconv(name, botton, top, s_filer=256, n_filer=64, offset="(1,0,0)", s
     ]
 
 
+def block_Unconv_1(name, botton, top, s_filer=256, n_filer=64, offset="(1,0,0)", size=(32, 32, 3.5), opacity=0.5):
+    return [
+        to_ConvRes(name='ccr_res_{}'.format(name), offset=offset, to="({}-east)".format(botton),
+                   s_filer=str(s_filer), n_filer=str(n_filer[0]), width=size[2], height=size[0], depth=size[1],
+                   opacity=opacity),
+        to_Conv(name='{}'.format(top), offset="(0,0,0)", to="(ccr_res_{}-east)".format(name), s_filer=str(),
+                n_filer=str(n_filer[1]), width=size[2], height=size[0], depth=size[1]),
+        to_connection(
+            "{}".format(botton),
+            "ccr_res_{}".format(name)
+        )
+    ]
+
+
+def block_Unconv_k1(name, botton, top, s_filer=256, n_filer=64, offset="(1,0,0)", size=(32, 32, 3.5), opacity=0.5):
+    return [
+        to_ConvRes(name='ccr_res_{}'.format(name), offset=offset, to="({}-east)".format(botton),
+                   s_filer=str(s_filer), n_filer=str(n_filer[0]), width=size[2], height=size[0], depth=size[1],
+                   opacity=opacity),
+        to_Conv_k1(name='{}'.format(top), offset="(0,0,0)", to="(ccr_res_{}-east)".format(name), s_filer=str(),
+                   n_filer=str(n_filer[1]), width=size[2], height=size[0], depth=size[1]),
+        to_connection(
+            "{}".format(botton),
+            "ccr_res_{}".format(name)
+        )
+    ]
+
+
 def block_Res(num, name, botton, top, s_filer=256, n_filer=64, offset="(0,0,0)", size=(32, 32, 3.5), opacity=0.5):
     lys = []
     layers = [*['{}_{}'.format(name, i) for i in range(num - 1)], top]

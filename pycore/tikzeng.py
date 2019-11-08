@@ -20,7 +20,9 @@ def to_cor():
 \def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
 \def\FcColor{rgb:blue,5;red,2.5;white,5}
 \def\FcReluColor{rgb:blue,5;red,5;white,4}
-\def\SoftmaxColor{rgb:magenta,5;black,7}   
+\def\SoftmaxColor{rgb:magenta,5;black,7}
+\def\Convk1Color{rgb:yellow,5;blue,1;white,1}
+\def\SumColor{rgb:yellow,3;blue,1;black,1}
 """
 
 
@@ -32,6 +34,7 @@ def to_begin():
 \begin{tikzpicture}
 \tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
 \tikzstyle{copyconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
+\tikzstyle{coconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\greencolor,opacity=0.7]
 """
 
 
@@ -54,6 +57,25 @@ def to_Conv(name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width
         xlabel={{""" + str(n_filer) + """, }},
         zlabel=""" + str(s_filer) + """,
         fill=\ConvColor,
+        height=""" + str(height) + """,
+        width=""" + str(width) + """,
+        depth=""" + str(depth) + """
+        }
+    };
+"""
+
+
+# Conv_kernel_1
+def to_Conv_k1(name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40,
+               caption=" "):
+    return r"""
+\pic[shift={""" + offset + """}] at """ + to + """ 
+    {Box={
+        name=""" + name + """,
+        caption=""" + caption + r""",
+        xlabel={{""" + str(n_filer) + """, }},
+        zlabel=""" + str(s_filer) + """,
+        fill=\Convk1Color,
         height=""" + str(height) + """,
         width=""" + str(width) + """,
         depth=""" + str(depth) + """
@@ -180,14 +202,33 @@ def to_connection(of, to):
 """
 
 
-def to_skip(of, to, pos=1.25):
+def to_connection_interpole(of, to):
+    return r"""
+\draw [coconnection]  (""" + of + """-east)    -- node {\greenarrow} (""" + to + """-west);
+"""
+
+
+def to_skip(of, to, pos=1.25, h=1):
     return r"""
 \path (""" + of + """-southeast) -- (""" + of + """-northeast) coordinate[pos=""" + str(pos) + """] (""" + of + """-top) ;
-\path (""" + to + """-south)  -- (""" + to + """-north)  coordinate[pos=""" + str(pos) + """] (""" + to + """-top) ;
+\path (""" + to + """-south)  -- (""" + to + """-north)  coordinate[pos=""" + str(pos + h) + """] (""" + to + """-top) ;
 \draw [copyconnection]  (""" + of + """-northeast)  
 -- node {\copymidarrow}(""" + of + """-top)
 -- node {\copymidarrow}(""" + to + """-top)
 -- node {\copymidarrow} (""" + to + """-north);
+"""
+
+
+def to_conc(name, to, offset):
+    return r"""
+\pic[shift={""" + offset + """}] at (""" + to + """-east)
+    {Ball={
+    name=""" + name + """,
+    fill=\SumColor,
+    radius=1.5,
+    logo=$c$
+        }
+    };
 """
 
 
